@@ -1,2 +1,16 @@
-# inventario-bodegas-web
-Sistema Web de Seguimiento y Control de Inventario para Bodegas y Tiendas Pequeñas Proyecto académico - Taller de Proyectos I
+## Estado del proyecto
+
+Producto Académico 03
+
+Estado: Producto Mínimo Viable (PMV)
+
+Sprint actual:
+Sprint 3
+
+Tecnologías
+
+- Django REST Framework
+- Vue.js
+- SQLite
+- GitHub
+- Figma
