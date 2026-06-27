@@ -1,16 +1,15 @@
-## Estado del proyecto
+## Estado del Proyecto
 
 Producto Académico 03
 
-Estado: Producto Mínimo Viable (PMV)
+Estado actual
 
-Sprint actual:
-Sprint 3
+✅ Planificación completada
 
-Tecnologías
+✅ Diseño UX/UI completado
 
-- Django REST Framework
-- Vue.js
-- SQLite
-- GitHub
-- Figma
+✅ Modelo de datos definido
+
+✅ PMV diseñado
+
+🚧 Implementación en desarrollo
