@@ -11,3 +11,4 @@ Backend propuesto para el Sistema Web de Control de Inventario.
 - suppliers: proveedores
 - alerts: alertas automáticas
 - reports: reportes y estadísticas
+-
