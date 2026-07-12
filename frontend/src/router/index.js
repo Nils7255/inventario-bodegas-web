@@ -1,11 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import { useAuthStore } from '../stores/auth'
+import AlertsView from '../views/AlertsView.vue'
 import DashboardView from '../views/DashboardView.vue'
 import LoginView from '../views/LoginView.vue'
 import MovementsView from '../views/MovementsView.vue'
 import ProductsView from '../views/ProductsView.vue'
+import ReportsView from '../views/ReportsView.vue'
 import SuppliersView from '../views/SuppliersView.vue'
+import UsersView from '../views/UsersView.vue'
 
 const routes = [
   {
@@ -36,6 +39,24 @@ const routes = [
     path: '/movimientos',
     name: 'movements',
     component: MovementsView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/alertas',
+    name: 'alerts',
+    component: AlertsView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/usuarios',
+    name: 'users',
+    component: UsersView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/reportes',
+    name: 'reports',
+    component: ReportsView,
     meta: { requiresAuth: true },
   },
   {

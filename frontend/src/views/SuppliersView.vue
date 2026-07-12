@@ -1,7 +1,6 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
-import { Edit2, LogOut, Mail, MapPin, Phone, Plus, Trash2, Truck, X } from '@lucide/vue'
+import { Edit2, Mail, MapPin, Phone, Plus, Trash2, Truck, X } from '@lucide/vue'
 
 import {
   createSupplier,
@@ -9,15 +8,12 @@ import {
   getSuppliers,
   updateSupplier,
 } from '../services/suppliers'
-import { useAuthStore } from '../stores/auth'
-
-const router = useRouter()
-const auth = useAuthStore()
 
 const suppliers = ref([])
 const loading = ref(false)
 const saving = ref(false)
 const error = ref('')
+const success = ref('')
 const formError = ref('')
 const showForm = ref(false)
 const editingSupplier = ref(null)
@@ -43,6 +39,7 @@ const inactiveSuppliers = computed(() =>
 async function loadSuppliers() {
   loading.value = true
   error.value = ''
+  success.value = ''
 
   try {
     const { data } = await getSuppliers()
@@ -100,6 +97,7 @@ async function submitSupplier() {
 
   saving.value = true
   formError.value = ''
+  success.value = ''
 
   const payload = {
     nombre: form.nombre.trim(),
@@ -123,6 +121,9 @@ async function submitSupplier() {
     }
 
     showForm.value = false
+    success.value = editingSupplier.value
+      ? 'Proveedor actualizado correctamente.'
+      : 'Proveedor creado correctamente.'
   } catch (requestError) {
     formError.value = 'No se pudo guardar el proveedor. Revisa los datos ingresados.'
   } finally {
@@ -136,20 +137,17 @@ async function handleDeactivate(supplier) {
   if (!confirmed) return
 
   error.value = ''
+  success.value = ''
 
   try {
     const { data } = await deactivateSupplier(supplier.id)
     suppliers.value = suppliers.value.map((item) =>
       item.id === data.id ? data : item
     )
+    success.value = 'Proveedor desactivado correctamente.'
   } catch (requestError) {
     error.value = 'No se pudo desactivar el proveedor.'
   }
-}
-
-function logout() {
-  auth.logout()
-  router.push({ name: 'login' })
 }
 
 onMounted(loadSuppliers)
@@ -164,13 +162,6 @@ onMounted(loadSuppliers)
       </div>
 
       <div class="header-actions">
-        <nav class="module-nav">
-          <RouterLink :to="{ name: 'products' }">Productos</RouterLink>
-          <RouterLink :to="{ name: 'suppliers' }">Proveedores</RouterLink>
-        </nav>
-        <button class="logout-button" type="button" title="Cerrar sesion" @click="logout">
-          <LogOut :size="16" />
-        </button>
         <button class="primary-button" type="button" @click="openCreate">
           <Plus :size="16" />
           Nuevo Proveedor
@@ -194,6 +185,7 @@ onMounted(loadSuppliers)
     </section>
 
     <p v-if="error" class="page-error">{{ error }}</p>
+    <p v-if="success" class="page-success">{{ success }}</p>
 
     <section class="suppliers-table-card">
       <div v-if="loading" class="empty-state">Cargando proveedores...</div>
@@ -345,7 +337,6 @@ onMounted(loadSuppliers)
 
 .suppliers-header,
 .header-actions,
-.module-nav,
 .supplier-cell,
 .row-actions,
 .form-actions,
@@ -382,24 +373,6 @@ h1 {
   gap: 10px;
 }
 
-.module-nav {
-  gap: 6px;
-}
-
-.module-nav a {
-  padding: 9px 12px;
-  border-radius: 8px;
-  color: #6b7280;
-  background: #f3f4f6;
-  font-size: 13px;
-  text-decoration: none;
-}
-
-.module-nav a.router-link-active {
-  color: #ffffff;
-  background: #1a3c5e;
-}
-
 button {
   border: 0;
   cursor: pointer;
@@ -407,8 +380,7 @@ button {
 }
 
 .primary-button,
-.secondary-button,
-.logout-button {
+.secondary-button {
   border-radius: 8px;
   transition: opacity 0.2s ease, background-color 0.2s ease;
 }
@@ -442,20 +414,9 @@ button {
 }
 
 .secondary-button:hover,
-.logout-button:hover,
 .row-actions button:hover,
 .modal-header button:hover {
   background: #f3f4f6;
-}
-
-.logout-button {
-  display: grid;
-  width: 38px;
-  height: 38px;
-  place-items: center;
-  color: #6b7280;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
 }
 
 .summary-grid {

@@ -1,15 +1,10 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { ArrowDown, ArrowUp, Filter, LogOut, Plus, X } from '@lucide/vue'
+import { ArrowDown, ArrowUp, Filter, Plus, X } from '@lucide/vue'
 
 import { createMovement, getMovements } from '../services/movements'
 import { getProducts } from '../services/products'
 import { getSuppliers } from '../services/suppliers'
-import { useAuthStore } from '../stores/auth'
-
-const router = useRouter()
-const auth = useAuthStore()
 
 const movements = ref([])
 const products = ref([])
@@ -17,6 +12,7 @@ const suppliers = ref([])
 const loading = ref(false)
 const saving = ref(false)
 const error = ref('')
+const success = ref('')
 const formError = ref('')
 const showForm = ref(false)
 const typeFilter = ref('todos')
@@ -66,6 +62,7 @@ function storeNote(movementId, note) {
 async function loadData() {
   loading.value = true
   error.value = ''
+  success.value = ''
 
   try {
     const [movementsResponse, productsResponse, suppliersResponse] = await Promise.all([
@@ -117,6 +114,7 @@ async function submitMovement() {
 
   saving.value = true
   formError.value = ''
+  success.value = ''
 
   const payload = {
     producto: form.producto,
@@ -134,6 +132,7 @@ async function submitMovement() {
     storeNote(data.id, form.observaciones)
     movements.value = [data, ...movements.value]
     showForm.value = false
+    success.value = 'Movimiento registrado correctamente.'
   } catch (requestError) {
     formError.value = 'No se pudo registrar el movimiento. Verifica el stock disponible.'
   } finally {
@@ -153,11 +152,6 @@ function movementNote(movementId) {
   return notesByMovement.value[movementId] || 'Sin observaciones'
 }
 
-function logout() {
-  auth.logout()
-  router.push({ name: 'login' })
-}
-
 onMounted(loadData)
 </script>
 
@@ -170,9 +164,6 @@ onMounted(loadData)
       </div>
 
       <div class="header-actions">
-        <button class="logout-button" type="button" title="Cerrar sesion" @click="logout">
-          <LogOut :size="16" />
-        </button>
         <button class="primary-button" type="button" @click="openCreate('entrada')">
           <Plus :size="16" />
           Nueva Entrada
@@ -217,6 +208,7 @@ onMounted(loadData)
     </section>
 
     <p v-if="error" class="page-error">{{ error }}</p>
+    <p v-if="success" class="page-success">{{ success }}</p>
 
     <section class="movements-table-card">
       <div v-if="loading" class="empty-state">Cargando movimientos...</div>
@@ -392,8 +384,7 @@ button {
 
 .primary-button,
 .secondary-button,
-.secondary-action,
-.logout-button {
+.secondary-action {
   border-radius: 8px;
   transition: opacity 0.2s ease, background-color 0.2s ease;
 }
@@ -437,19 +428,8 @@ button {
 }
 
 .secondary-button:hover,
-.logout-button:hover,
 .modal-header button:hover {
   background: #f3f4f6;
-}
-
-.logout-button {
-  display: grid;
-  width: 38px;
-  height: 38px;
-  place-items: center;
-  color: #6b7280;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
 }
 
 .summary-grid {
